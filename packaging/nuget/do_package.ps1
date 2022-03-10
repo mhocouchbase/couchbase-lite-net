@@ -24,6 +24,10 @@ if($env:WORKSPACE) {
     Copy-Item "$env:WORKSPACE\product-texts\mobile\couchbase-lite\license\LICENSE_community.txt" "$PSScriptRoot\LICENSE.txt"
 }
 
+if(Test-Path -Path $env:WORKSPACE\notices.txt -PathType Leaf) {
+    Copy-Item "$env:WORKSPACE\notices.txt" "$PSScriptRoot\notices.txt"
+}
+
 Get-ChildItem "." -Filter *.nuspec |
 ForEach-Object {
     ..\..\nuget.exe pack $_.Name /Properties version=$env:NUGET_VERSION /BasePath ..\..\
@@ -33,13 +37,13 @@ ForEach-Object {
     }
 }
 
-Get-ChildItem "." -Filter *.nupkg |
-ForEach-Object {
-    ..\..\nuget.exe push $_.Name $env:API_KEY -Source $env:NUGET_REPO
-    if($LASTEXITCODE) {
-        Pop-Location
-        throw "Failed to push $_"
-    }
-}
+#Get-ChildItem "." -Filter *.nupkg |
+#ForEach-Object {
+    #..\..\nuget.exe push $_.Name $env:API_KEY -Source $env:NUGET_REPO
+    #if($LASTEXITCODE) {
+        #Pop-Location
+        #throw "Failed to push $_"
+    #}
+#}
 
 Pop-Location
